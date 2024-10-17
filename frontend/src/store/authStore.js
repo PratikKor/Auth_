@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import axios from "axios";
+// import { error } from "console";
 
 const api_url = "http://localhost:5000/api/auth";
 
@@ -32,6 +33,16 @@ export const useAuthStore = create((set)=>({
         } catch (error) {
             set({error:error.response.data.message || "Error Verifying Email",isLoading:false});
             throw error;
+        }
+    },
+
+    checkAuth : async (params) => {
+        set: ({isCheckingAuth:true,error:null});
+        try {
+            const response = await axios.get(`${api_url}/check-auth`);
+            set({user:response.data.user , isAuthenticated:true ,isCheckingAuth:false,});
+        } catch (error) {
+            set({error:null , isCheckingAuth:false,isAuthenticated:false});
         }
     },
 
